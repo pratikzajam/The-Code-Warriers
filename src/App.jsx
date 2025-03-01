@@ -10,7 +10,7 @@ import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import { AuthProvider } from './context/AuthContext'
-import ProtectedRoute from './components/auth/ProtectedRoute'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)

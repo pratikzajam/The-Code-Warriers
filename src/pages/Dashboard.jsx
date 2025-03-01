@@ -95,6 +95,18 @@ const Dashboard = () => {
     },
   }
 
+  // Example of how to make authenticated requests in your dashboard
+  const fetchDashboardData = async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch('https://gemify-backend.onrender.com/dashboard', {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      }
+    });
+    // Handle the response...
+  };
+
   return (
     <div className="bg-background-light min-h-screen pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
