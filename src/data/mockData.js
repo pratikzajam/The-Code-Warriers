@@ -437,6 +437,7 @@ export const userStats = {
     90, 110, 130, 150, 170, 190, 210, 190, 170, 150, 130, 110, 
     90, 70, 50, 30, 20, 10
   ], // minutes per day for the last month
+  lastPracticeDate: '2023-10-05T09:00:00Z',
   favoriteAsanas: [
     { name: 'Downward-Facing Dog', count: 12 },
     { name: 'Warrior I', count: 10 },
@@ -444,8 +445,8 @@ export const userStats = {
     { name: 'Corpse Pose', count: 7 },
     { name: 'Warrior II', count: 6 }
   ],
-  totalPracticeTime: 1890, // in minutes
-  totalSessions: 32,
+  totalPracticeTime: 50, // in minutes
+  totalSessions: 10,
   currentStreak: 7,
   longestStreak: 14,
   pointsThisWeek: 120,

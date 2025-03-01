@@ -11,6 +11,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import { UserStatsProvider } from './components/usercontexts/UserStatsContext'
 
 function App() {
   const [isLoading, setIsLoading] = useState(true)
@@ -37,6 +38,7 @@ function App() {
 
   return (
     <AuthProvider>
+       <UserStatsProvider>
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow">
@@ -69,6 +71,7 @@ function App() {
         </main>
         <Footer />
       </div>
+      </UserStatsProvider>
     </AuthProvider>
   )
 }
