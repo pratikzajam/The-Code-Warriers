@@ -98,7 +98,7 @@ const Dashboard = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Total Practice Time</p>
-                <h3 className="text-2xl font-bold">{userStats.totalPracticeTime} mins</h3>
+                <h3 className="text-2xl font-bold">{Math.floor(userStats.totalPracticeTime)} mins</h3>
               </div>
             </div>
           </div>

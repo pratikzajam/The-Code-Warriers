@@ -285,7 +285,7 @@ export const practiceLogs = [
       { id: 2, name: 'Warrior I', duration: 45, repetitions: 2, difficulty: 2 },
       { id: 4, name: 'Child\'s Pose', duration: 90, repetitions: 1, difficulty: 1 }
     ],
-    totalDuration: 345, // in seconds
+    totalDuration: 300, // in seconds
     notes: 'Felt energized after this morning practice.',
     mood: 'Energized',
     shared: true
@@ -313,7 +313,7 @@ export const practiceLogs = [
       { id: 6, name: 'Bridge Pose', duration: 45, repetitions: 3, difficulty: 2 },
       { id: 10, name: 'Corpse Pose', duration: 300, repetitions: 1, difficulty: 1 }
     ],
-    totalDuration: 525, // in seconds
+    totalDuration: 500, // in seconds
     notes: 'Back-strengthening session. Feeling good!',
     mood: 'Relaxed',
     shared: false
@@ -327,7 +327,7 @@ export const practiceLogs = [
       { id: 9, name: 'Triangle Pose', duration: 30, repetitions: 2, difficulty: 3 },
       { id: 7, name: 'Seated Forward Bend', duration: 60, repetitions: 2, difficulty: 3 }
     ],
-    totalDuration: 360, // in seconds
+    totalDuration: 300, // in seconds
     notes: 'Focused on stretching today. Hamstrings feel tight.',
     mood: 'Stretched',
     shared: true
@@ -341,7 +341,7 @@ export const practiceLogs = [
       { id: 8, name: 'Warrior II', duration: 45, repetitions: 2, difficulty: 2 },
       { id: 9, name: 'Triangle Pose', duration: 30, repetitions: 2, difficulty: 3 }
     ],
-    totalDuration: 240, // in seconds
+    totalDuration: 200, // in seconds
     notes: 'Short standing sequence today. Felt strong!',
     mood: 'Strong',
     shared: true
@@ -354,7 +354,7 @@ export const practiceLogs = [
       { id: 4, name: 'Child\'s Pose', duration: 90, repetitions: 1, difficulty: 1 },
       { id: 10, name: 'Corpse Pose', duration: 300, repetitions: 1, difficulty: 1 }
     ],
-    totalDuration: 390, // in seconds
+    totalDuration: 300, // in seconds
     notes: 'Restorative practice today. Needed to relax.',
     mood: 'Calm',
     shared: false
@@ -370,7 +370,7 @@ export const practiceLogs = [
       { id: 9, name: 'Triangle Pose', duration: 30, repetitions: 2, difficulty: 3 },
       { id: 10, name: 'Corpse Pose', duration: 300, repetitions: 1, difficulty: 1 }
     ],
-    totalDuration: 660, // in seconds
+    totalDuration: 600, // in seconds
     notes: 'Full practice today. Feeling accomplished!',
     mood: 'Accomplished',
     shared: true
@@ -439,11 +439,11 @@ export const userStats = {
   ], // minutes per day for the last month
   lastPracticeDate: '2023-10-05T09:00:00Z',
   favoriteAsanas: [
-    { name: 'Downward-Facing Dog', count: 12 },
+    { name: 'Downward-Facing Dog', count: 10 },
     { name: 'Warrior I', count: 10 },
-    { name: 'Child\'s Pose', count: 8 },
-    { name: 'Corpse Pose', count: 7 },
-    { name: 'Warrior II', count: 6 }
+    { name: 'Child\'s Pose', count: 10 },
+    { name: 'Corpse Pose', count: 10 },
+    { name: 'Warrior II', count: 10 }
   ],
   totalPracticeTime: 50, // in minutes
   totalSessions: 10,
