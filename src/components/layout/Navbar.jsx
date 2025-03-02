@@ -64,7 +64,10 @@ const Navbar = () => {
                       <div className="py-1">
                         <Link
                           to="/profile"
-                          onClick={() => setIsProfileOpen(false)}
+                          onClick={() => {
+                            setIsProfileOpen(false);
+                            console.log('Navigating to profile page');
+                          }}
                           className="flex items-center px-4 py-2 text-sm text-primary-dark hover:bg-background-light"
                         >
                           <FaUser className="mr-2" /> Your Profile
