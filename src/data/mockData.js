@@ -10,7 +10,7 @@ export const asanas = [
     difficulty: 2,
     benefits: ['Strengthens arms and legs', 'Stretches shoulders, hamstrings, calves', 'Energizes the body'],
     description: 'A common pose in yoga that forms an inverted V-shape. It helps to strengthen the arms and legs while stretching the shoulders, hamstrings, and calves.',
-    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+    image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&0&q=60w=50',
     muscleGroups: ['Arms', 'Shoulders', 'Hamstrings', 'Calves'],
     avgDuration: 60, // in seconds
     popularityScore: 95

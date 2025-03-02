@@ -27,8 +27,26 @@ const Register = () => {
       await register(name, email, password)
       navigate('/dashboard')
     } catch (err) {
-      setError('Failed to create an account')
-      console.error(err)
+      let errorMessage;
+      switch (err.code) {
+        case 'auth/email-already-in-use':
+          errorMessage = 'This email is already registered. Please try logging in instead.';
+          break;
+        case 'auth/weak-password':
+          errorMessage = 'Password should be at least 6 characters long.';
+          break;
+        case 'auth/invalid-email':
+          errorMessage = 'Please enter a valid email address.';
+          break;
+        case 'permission-denied':
+        case 'firebase/permission-denied':
+          errorMessage = 'Unable to create account due to permission settings. Please contact support.';
+          break;
+        default:
+          errorMessage = 'Failed to create an account. Please try again.';
+      }
+      setError(errorMessage);
+      console.error('Registration error:', err);
     } finally {
       setLoading(false)
     }

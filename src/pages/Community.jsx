@@ -1,19 +1,220 @@
-import { useState } from 'react'
-import { FaUsers, FaTrophy, FaPlus, FaComment, FaHeart, FaShare } from 'react-icons/fa'
+import { useState, useEffect } from 'react'
+import { 
+  FaUsers, FaTrophy, FaPlus, FaComment, FaHeart, FaShare, FaTimes 
+} from 'react-icons/fa'
 import { useAuth } from '../context/AuthContext'
-import { groups, challenges, communityPosts } from '../data/mockData'
-import { format, parseISO } from 'date-fns'
+import { db, storage } from '../config/firebase'
+import { 
+  collection, addDoc, query, onSnapshot, doc, updateDoc, arrayUnion, arrayRemove 
+} from 'firebase/firestore'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { format } from 'date-fns'
 
 const Community = () => {
   const { currentUser } = useAuth()
   const [activeTab, setActiveTab] = useState('feed')
-  const [likedPosts, setLikedPosts] = useState({})
+  const [showGroupForm, setShowGroupForm] = useState(false)
+  const [showChallengeForm, setShowChallengeForm] = useState(false)
   
-  const handleLike = (postId) => {
-    setLikedPosts(prev => ({
-      ...prev,
-      [postId]: !prev[postId]
-    }))
+  // Post states
+  const [postContent, setPostContent] = useState('')
+  const [postImageUrl, setPostImageUrl] = useState('')
+  
+  // Group states
+  const [groupName, setGroupName] = useState('')
+  const [groupDesc, setGroupDesc] = useState('')
+  const [groupImageUrl, setGroupImageUrl] = useState('')
+  
+  // Challenge states
+  const [challengeTitle, setChallengeTitle] = useState('')
+  const [challengeDesc, setChallengeDesc] = useState('')
+  const [challengeDuration, setChallengeDuration] = useState('')
+  const [challengeDifficulty, setChallengeDifficulty] = useState('beginner')
+  const [challengeImageUrl, setChallengeImageUrl] = useState('')
+
+  // Data states
+  const [posts, setPosts] = useState([])
+  const [groups, setGroups] = useState([])
+  const [challenges, setChallenges] = useState([])
+
+  // Add authentication check
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
+  useEffect(() => {
+    if (currentUser?.uid) {
+      setIsAuthenticated(true)
+    } else {
+      setIsAuthenticated(false)
+    }
+  }, [currentUser])
+
+  // Fetch data on component mount
+  useEffect(() => {
+    // Fetch posts
+    const qPosts = query(collection(db, 'posts'))
+    const unsubscribePosts = onSnapshot(qPosts, (snapshot) => {
+      const postsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        date: doc.data().date.toDate()
+      }))
+      setPosts(postsData)
+    })
+
+    // Fetch groups
+    const qGroups = query(collection(db, 'groups'))
+    const unsubscribeGroups = onSnapshot(qGroups, (snapshot) => {
+      setGroups(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })))
+    })
+
+    // Fetch challenges with error handling and data transformation
+    const qChallenges = query(collection(db, 'groups'))
+    const unsubscribeChallenges = onSnapshot(qChallenges, (snapshot) => {
+      try {
+        const challengesData = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            ...data,
+            startDate: data.startDate?.toDate() || new Date(), // Handle potential timestamp conversion
+            participants: data.participants?.length || 0 // Convert participants array to count
+          };
+        });
+        console.log('Fetched challenges:', challengesData); // Debug log
+        setChallenges(challengesData);
+      } catch (error) {
+        console.error('Error processing challenges data:', error);
+      }
+    });
+
+    return () => {
+      unsubscribePosts()
+      unsubscribeGroups()
+      unsubscribeChallenges()
+    }
+  }, [])
+
+  // Handle post creation
+  const handlePostSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!isAuthenticated) {
+        console.error("User not authenticated");
+        return;
+      }
+      
+      if (!postContent.trim()) return;
+      
+      const postData = {
+        content: postContent,
+        image: postImageUrl || '', // Provide default empty string
+        userId: currentUser.uid,
+        userName: currentUser.displayName || 'Anonymous',
+        userImage: currentUser.photoURL || '/default-avatar.png',
+        likes: [],
+        comments: [],
+        date: new Date()
+      };
+
+      await addDoc(collection(db, 'posts'), postData);
+
+      setPostContent('');
+      setPostImageUrl('');
+    } catch (error) {
+      console.error("Error creating post:", error);
+    }
+  }
+
+  // Handle group creation
+  const handleGroupSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!isAuthenticated) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      const groupData = {
+        name: groupName,
+        description: groupDesc,
+        image: groupImageUrl || '', // Provide default empty string
+        members: [currentUser.uid],
+        createdBy: currentUser.uid,
+        createdAt: new Date(),
+        posts: 0
+      };
+
+      await addDoc(collection(db, 'groups'), groupData);
+
+      setShowGroupForm(false);
+      setGroupName('');
+      setGroupDesc('');
+      setGroupImageUrl('');
+    } catch (error) {
+      console.error("Error creating group:", error);
+    }
+  }
+
+  // Handle challenge creation
+  const handleChallengeSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (!isAuthenticated) {
+        console.error("User not authenticated");
+        return;
+      }
+
+      const challengeData = {
+        title: challengeTitle,
+        description: challengeDesc,
+        duration: challengeDuration,
+        difficulty: challengeDifficulty,
+        image: challengeImageUrl || '', // Provide default empty string
+        participants: [currentUser.uid],
+        createdBy: currentUser.uid,
+        startDate: new Date(),
+        reward: '100 Points'
+      };
+
+      await addDoc(collection(db, 'challenges'), challengeData);
+
+      setShowChallengeForm(false);
+      setChallengeTitle('');
+      setChallengeDesc('');
+      setChallengeDuration('');
+      setChallengeDifficulty('beginner');
+      setChallengeImageUrl('');
+    } catch (error) {
+      console.error("Error creating challenge:", error);
+    }
+  }
+
+  // Handle post likes
+  const handleLike = async (postId) => {
+    const postRef = doc(db, 'posts', postId)
+    const post = posts.find(p => p.id === postId)
+    
+    if (post.likes.includes(currentUser.uid)) {
+      await updateDoc(postRef, {
+        likes: arrayRemove(currentUser.uid)
+      })
+    } else {
+      await updateDoc(postRef, {
+        likes: arrayUnion(currentUser.uid)
+      })
+    }
+  }
+
+  // Add authentication check in the render method
+  if (!isAuthenticated) {
+    return (
+      <div className="bg-background-light min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-primary-dark mb-4">Please Sign In</h2>
+          <p className="text-gray-600">You need to be signed in to access the community features.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -68,43 +269,48 @@ const Community = () => {
           <div className="p-6">
             {activeTab === 'feed' && (
               <div>
-                {/* Create Post */}
+                {/* Post Creation Form */}
                 <div className="bg-background-light rounded-lg p-4 mb-6">
-                  <div className="flex items-start">
-                    <img 
-                      src={currentUser.profilePic} 
-                      alt="Profile" 
-                      className="w-10 h-10 rounded-full mr-3"
-                    />
-                    <div className="flex-grow">
-                      <textarea 
-                        className="input min-h-[100px]" 
-                        placeholder="Share your yoga journey or ask a question..."
-                      ></textarea>
-                      <div className="flex justify-between mt-3">
+                  <form onSubmit={handlePostSubmit}>
+                    <div className="flex items-start">
+                      <img 
+                        src={currentUser.profilePic} 
+                        alt="Profile" 
+                        className="w-10 h-10 rounded-full mr-3"
+                      />
+                      <div className="flex-grow">
+                        <textarea 
+                          className="input min-h-[100px]" 
+                          placeholder="Share your yoga journey..."
+                          value={postContent}
+                          onChange={(e) => setPostContent(e.target.value)}
+                        ></textarea>
                         <div className="flex space-x-2">
-                          <button className="btn btn-sm bg-background-dark text-gray-700 hover:bg-gray-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                            Photo
-                          </button>
-                          <button className="btn btn-sm bg-background-dark text-gray-700 hover:bg-gray-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-                            </svg>
-                            Log Practice
+                          <input 
+                            type="text" 
+                            placeholder="Image URL (optional)"
+                            className="input input-sm"
+                            value={postImageUrl}
+                            onChange={(e) => setPostImageUrl(e.target.value)}
+                          />
+                        </div>
+                        <div className="flex justify-between mt-3">
+                          <button 
+                            type="submit"
+                            className="btn btn-primary btn-sm"
+                            disabled={!postContent.trim()}
+                          >
+                            Post
                           </button>
                         </div>
-                        <button className="btn btn-primary btn-sm">Post</button>
                       </div>
                     </div>
-                  </div>
+                  </form>
                 </div>
-                
-                {/* Posts */}
+
+                {/* Posts List */}
                 <div className="space-y-6">
-                  {communityPosts.map((post) => (
+                  {posts.map((post) => (
                     <div key={post.id} className="bg-white rounded-lg shadow-sm p-4 border border-gray-100">
                       <div className="flex items-start mb-3">
                         <img 
@@ -132,11 +338,11 @@ const Community = () => {
                       
                       <div className="flex items-center justify-between text-sm text-gray-500 pt-3 border-t border-gray-100">
                         <button 
-                          className={`flex items-center ${likedPosts[post.id] ? 'text-accent' : ''}`}
+                          className={`flex items-center ${post.likes.includes(currentUser.uid) ? 'text-accent' : ''}`}
                           onClick={() => handleLike(post.id)}
                         >
                           <FaHeart className="mr-1" /> 
-                          {likedPosts[post.id] ? post.likes + 1 : post.likes} Likes
+                          {post.likes.length} Likes
                         </button>
                         <button className="flex items-center">
                           <FaComment className="mr-1" /> {post.comments} Comments
@@ -153,13 +359,60 @@ const Community = () => {
             
             {activeTab === 'groups' && (
               <div>
+                {/* Groups Header with Create Button */}
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold">Your Groups</h3>
-                  <button className="btn btn-primary">
+                  <button 
+                    className="btn btn-primary"
+                    onClick={() => setShowGroupForm(true)}
+                  >
                     <FaPlus className="mr-2" /> Create Group
                   </button>
                 </div>
-                
+
+                {/* Group Creation Modal */}
+                {showGroupForm && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg w-96">
+                      <div className="flex justify-between mb-4">
+                        <h3 className="text-lg font-semibold">Create New Group</h3>
+                        <button onClick={() => setShowGroupForm(false)}>
+                          <FaTimes />
+                        </button>
+                      </div>
+                      <form onSubmit={handleGroupSubmit}>
+                        <input
+                          type="text"
+                          placeholder="Group Name"
+                          className="input mb-3 w-full"
+                          value={groupName}
+                          onChange={(e) => setGroupName(e.target.value)}
+                          required
+                        />
+                        <textarea
+                          placeholder="Group Description"
+                          className="input mb-3 w-full"
+                          value={groupDesc}
+                          onChange={(e) => setGroupDesc(e.target.value)}
+                          required
+                        />
+                        <input
+                          type="text"
+                          placeholder="Group Image URL"
+                          className="input mb-3 w-full"
+                          value={groupImageUrl}
+                          onChange={(e) => setGroupImageUrl(e.target.value)}
+                          required
+                        />
+                        <button type="submit" className="btn btn-primary w-full">
+                          Create Group
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                )}
+
+                {/* Groups List */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {groups.map((group) => (
                     <div key={group.id} className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
@@ -179,74 +432,134 @@ const Community = () => {
                       </div>
                     </div>
                   ))}
-                  
-                  {/* Discover More Groups Card */}
-                  <div className="bg-background-light rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-6 h-full">
-                    <FaUsers className="text-4xl text-gray-400 mb-3" />
-                    <h4 className="font-semibold text-lg mb-1 text-center">Discover More Groups</h4>
-                    <p className="text-sm text-gray-600 mb-4 text-center">Find groups that match your interests and goals</p>
-                    <button className="btn btn-outline">Browse Groups</button>
-                  </div>
                 </div>
               </div>
             )}
             
             {activeTab === 'challenges' && (
               <div>
+                {/* Challenges Header with Create Button */}
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-lg font-semibold">Active Challenges</h3>
-                  <button className="btn btn-primary">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setShowChallengeForm(true)}
+                  >
                     <FaPlus className="mr-2" /> Create Challenge
                   </button>
                 </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {challenges.map((challenge) => (
-                    <div key={challenge.id} className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
-                      <div className="relative">
-                        <img 
-                          src={challenge.image} 
-                          alt={challenge.title} 
-                          className="w-full h-40 object-cover"
+
+                {/* Challenge Creation Modal */}
+                {showChallengeForm && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg w-96">
+                      <div className="flex justify-between mb-4">
+                        <h3 className="text-lg font-semibold">Create Challenge</h3>
+                        <button onClick={() => setShowChallengeForm(false)}>
+                          <FaTimes />
+                        </button>
+                      </div>
+                      <form onSubmit={handleChallengeSubmit}>
+                        <input
+                          type="text"
+                          placeholder="Challenge Title"
+                          className="input mb-3 w-full"
+                          value={challengeTitle}
+                          onChange={(e) => setChallengeTitle(e.target.value)}
+                          required
                         />
-                        <div className="absolute top-0 right-0 bg-primary text-white px-3 py-1 text-sm font-semibold rounded-bl-lg">
-                          {challenge.difficulty}
-                        </div>
-                      </div>
-                      <div className="p-4">
-                        <h4 className="font-semibold text-lg mb-1">{challenge.title}</h4>
-                        <p className="text-sm text-gray-600 mb-3">{challenge.description}</p>
-                        <div className="grid grid-cols-2 gap-2 text-sm mb-3">
-                          <div className="bg-background-light rounded p-2">
-                            <p className="text-gray-500">Duration</p>
-                            <p className="font-medium">{challenge.duration} days</p>
-                          </div>
-                          <div className="bg-background-light rounded p-2">
-                            <p className="text-gray-500">Participants</p>
-                            <p className="font-medium">{challenge.participants}</p>
-                          </div>
-                          <div className="bg-background-light rounded p-2">
-                            <p className="text-gray-500">Start Date</p>
-                            <p className="font-medium">{format(parseISO(challenge.startDate), 'MMM d, yyyy')}</p>
-                          </div>
-                          <div className="bg-background-light rounded p-2">
-                            <p className="text-gray-500">Reward</p>
-                            <p className="font-medium">{challenge.reward}</p>
-                          </div>
-                        </div>
-                        <button className="btn btn-primary w-full">Join Challenge</button>
-                      </div>
+                        <textarea
+                          placeholder="Description"
+                          className="input mb-3 w-full"
+                          value={challengeDesc}
+                          onChange={(e) => setChallengeDesc(e.target.value)}
+                          required
+                        />
+                        <input
+                          type="number"
+                          placeholder="Duration (days)"
+                          className="input mb-3 w-full"
+                          value={challengeDuration}
+                          onChange={(e) => setChallengeDuration(e.target.value)}
+                          required
+                        />
+                        <select
+                          className="input mb-3 w-full"
+                          value={challengeDifficulty}
+                          onChange={(e) => setChallengeDifficulty(e.target.value)}
+                          required
+                        >
+                          <option value="beginner">Beginner</option>
+                          <option value="intermediate">Intermediate</option>
+                          <option value="advanced">Advanced</option>
+                        </select>
+                        <input
+                          type="text"
+                          placeholder="Challenge Image URL"
+                          className="input mb-3 w-full"
+                          value={challengeImageUrl}
+                          onChange={(e) => setChallengeImageUrl(e.target.value)}
+                          required
+                        />
+                        <button type="submit" className="btn btn-primary w-full">
+                          Create Challenge
+                        </button>
+                      </form>
                     </div>
-                  ))}
-                  
-                  {/* Create Challenge Card */}
-                  <div className="bg-background-light rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-6 h-full">
-                    <FaTrophy className="text-4xl text-gray-400 mb-3" />
-                    <h4 className="font-semibold text-lg mb-1 text-center">Create Your Challenge</h4>
-                    <p className="text-sm text-gray-600 mb-4 text-center">Design a custom challenge for yourself or your group</p>
-                    <button className="btn btn-outline">Create Challenge</button>
                   </div>
-                </div>
+                )}
+
+                {/* Add loading and error states */}
+                {challenges.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500">No challenges available yet. Create one!</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {challenges.map((challenge) => (
+                      <div key={challenge.id} className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
+                        <div className="relative">
+                          <img 
+                            src={challenge.image || '/default-challenge-image.jpg'} // Add fallback image
+                            alt={challenge.title}
+                            className="w-full h-40 object-cover"
+                            onError={(e) => {
+                              e.target.src = '/default-challenge-image.jpg'; // Fallback on image error
+                            }}
+                          />
+                          <div className="absolute top-0 right-0 bg-primary text-white px-3 py-1 text-sm font-semibold rounded-bl-lg">
+                            {challenge.difficulty}
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h4 className="font-semibold text-lg mb-1">{challenge.title}</h4>
+                          <p className="text-sm text-gray-600 mb-3">{challenge.description}</p>
+                          <div className="grid grid-cols-2 gap-2 text-sm mb-3">
+                            <div className="bg-background-light rounded p-2">
+                              <p className="text-gray-500">Duration</p>
+                              <p className="font-medium">{challenge.duration} days</p>
+                            </div>
+                            <div className="bg-background-light rounded p-2">
+                              <p className="text-gray-500">Participants</p>
+                              <p className="font-medium">{challenge.participants}</p>
+                            </div>
+                            <div className="bg-background-light rounded p-2">
+                              <p className="text-gray-500">Start Date</p>
+                              <p className="font-medium">
+                                {format(new Date(challenge.startDate), 'MMM d, yyyy')}
+                              </p>
+                            </div>
+                            <div className="bg-background-light rounded p-2">
+                              <p className="text-gray-500">Reward</p>
+                              <p className="font-medium">{challenge.reward}</p>
+                            </div>
+                          </div>
+                          <button className="btn btn-primary w-full">Join Challenge</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

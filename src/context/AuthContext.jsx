@@ -1,4 +1,13 @@
 import { createContext, useState, useContext, useEffect } from 'react'
+import { auth, db } from '../config/firebase' // Make sure to import auth from firebase
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  updateProfile
+} from 'firebase/auth'
+import { doc, setDoc } from 'firebase/firestore'
 
 const AuthContext = createContext()
 
@@ -8,66 +17,68 @@ export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Check if user is logged in from localStorage on initial load
+  // Listen to auth state changes
   useEffect(() => {
-    const user = localStorage.getItem('yogaUser')
-    if (user) {
-      setCurrentUser(JSON.parse(user))
-    }
-    setLoading(false)
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user)
+      setLoading(false)
+    })
+
+    return unsubscribe
   }, [])
 
-  // Mock login function
-  const login = (email, password) => {
-    // In a real app, this would make an API call to authenticate
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Mock user data
-        const user = {
-          id: '1',
-          name: 'Yoga Enthusiast',
-          email: email,
-          profilePic: 'https://randomuser.me/api/portraits/women/44.jpg',
-          yogaGoals: ['Improve flexibility', 'Reduce stress'],
-          points: 120,
-          streak: 7,
-          badges: ['Beginner', '7-Day Streak']
-        }
-        
-        setCurrentUser(user)
-        localStorage.setItem('yogaUser', JSON.stringify(user))
-        resolve(user)
-      }, 1000)
-    })
+  // Register function
+  const register = async (name, email, password) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user
+
+      // Update user profile
+      await updateProfile(user, {
+        displayName: name,
+        photoURL: 'https://randomuser.me/api/portraits/women/44.jpg' // default avatar
+      })
+
+      // Create user document in Firestore
+      await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
+        name: name,
+        email: email,
+        profilePic: 'https://randomuser.me/api/portraits/women/44.jpg',
+        yogaGoals: [],
+        points: 0,
+        streak: 0,
+        badges: ['Newcomer'],
+        createdAt: new Date()
+      })
+
+      setCurrentUser(user)
+      return user
+    } catch (error) {
+      throw error
+    }
   }
 
-  // Mock register function
-  const register = (name, email, password) => {
-    // In a real app, this would make an API call to register
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Mock user data
-        const user = {
-          id: '1',
-          name: name,
-          email: email,
-          profilePic: 'https://randomuser.me/api/portraits/women/44.jpg',
-          yogaGoals: [],
-          points: 0,
-          streak: 0,
-          badges: ['Newcomer']
-        }
-        
-        setCurrentUser(user)
-        localStorage.setItem('yogaUser', JSON.stringify(user))
-        resolve(user)
-      }, 1000)
-    })
+  // Login function
+  const login = async (email, password) => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user
+      setCurrentUser(user)
+      return user
+    } catch (error) {
+      throw error
+    }
   }
 
-  const logout = () => {
-    setCurrentUser(null)
-    localStorage.removeItem('yogaUser')
+  // Logout function
+  const logout = async () => {
+    try {
+      await signOut(auth)
+      setCurrentUser(null)
+    } catch (error) {
+      throw error
+    }
   }
 
   const value = {
