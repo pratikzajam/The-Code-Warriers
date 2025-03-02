@@ -1,4 +1,6 @@
+
 import { useState, useEffect } from 'react'
+
 import { Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/layout/Navbar'
 import Footer from './components/layout/Footer'
@@ -49,6 +51,7 @@ function App() {
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+               
               </ProtectedRoute>
             } />
             <Route path="/asana-library" element={
@@ -69,11 +72,16 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
+        
         <Footer />
       </div>
       </UserStatsProvider>
+      
     </AuthProvider>
+    
   )
 }
 
 export default App
+
+

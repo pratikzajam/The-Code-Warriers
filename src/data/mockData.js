@@ -299,7 +299,7 @@ export const practiceLogs = [
       { id: 8, name: 'Warrior II', duration: 45, repetitions: 2, difficulty: 2 },
       { id: 10, name: 'Corpse Pose', duration: 300, repetitions: 1, difficulty: 1 }
     ],
-    totalDuration: 450, // in seconds
+    totalDuration: 400, // in seconds
     notes: 'Focused on balance today. Still struggling with Tree Pose.',
     mood: 'Focused',
     shared: true

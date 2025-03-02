@@ -3,6 +3,7 @@ import { FaCalendarAlt, FaChartLine, FaFire, FaMedal } from 'react-icons/fa';
 import { GiMeditation } from 'react-icons/gi';
 import { useUserStats } from '../components/usercontexts/UserStatsContext'
 import { startOfDay, isSameDay, parseISO } from 'date-fns';
+import Schedule from './schedule/Sechedule';
 import { Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -72,6 +73,7 @@ const Dashboard = () => {
   };
 
   return (
+    <div>
     <div className="bg-background-light min-h-screen pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <h1 className="text-3xl font-bold text-primary-dark mb-2">Dashboard</h1>
@@ -151,10 +153,23 @@ const Dashboard = () => {
             <h3 className="text-lg font-semibold mb-4">Favorite Asanas</h3>
             <Doughnut data={favoriteAsanasData} />
           </div>
+          
         </div>
+       
       </div>
+      <Schedule/>
+   
+    </div>
+    
     </div>
   );
+
 };
 
+
+
 export default Dashboard;
+
+
+
+
