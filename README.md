@@ -120,8 +120,5 @@ Special thanks to the yoga community for their continuous support and feedback.
 
 ---  
 
-### **Note:**  
-Make sure to replace `"path/to/image.png"` with the actual paths of the images in your repository.  
 
-Let me know if you need any modifications! 🚀
 
