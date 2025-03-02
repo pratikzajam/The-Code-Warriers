@@ -274,11 +274,14 @@ const Community = () => {
                   <form onSubmit={handlePostSubmit}>
                     <div className="flex items-start">
                       <img 
-                        src={currentUser.profilePic} 
-                        alt="Profile" 
+                        src={currentUser.photoURL || '/default-avatar.png'} 
+                        alt={currentUser.displayName || 'Anonymous'} 
                         className="w-10 h-10 rounded-full mr-3"
                       />
                       <div className="flex-grow">
+                        <div className="mb-2 text-sm font-medium text-gray-700">
+                          {currentUser.displayName || 'Anonymous'}
+                        </div>
                         <textarea 
                           className="input min-h-[100px]" 
                           placeholder="Share your yoga journey..."

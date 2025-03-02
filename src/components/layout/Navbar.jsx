@@ -42,12 +42,20 @@ const Navbar = () => {
                       onClick={() => setIsProfileOpen(!isProfileOpen)}
                       className="flex items-center text-sm rounded-full focus:outline-none"
                     >
-                      <img
-                        className="h-8 w-8 rounded-full border-2 border-primary"
-                        src={currentUser.profilePic}
-                        alt="User profile"
-                      />
-                      <span className="ml-2 text-primary-dark">{currentUser.name}</span>
+                      {currentUser.photoURL ? (
+                        <img
+                          className="h-8 w-8 rounded-full border-2 border-primary"
+                          src={currentUser.photoURL}
+                          alt="User profile"
+                        />
+                      ) : (
+                        <div className="h-8 w-8 rounded-full border-2 border-primary bg-primary text-white flex items-center justify-center font-semibold">
+                          {(currentUser.displayName || currentUser.email || '').charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                      <span className="ml-2 text-primary-dark">
+                        {currentUser.displayName || currentUser.email}
+                      </span>
                     </button>
                   </div>
                   
