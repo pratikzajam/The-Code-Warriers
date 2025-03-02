@@ -1,5 +1,3 @@
-
-
 import { useState } from 'react';
 import { FaCalendarAlt, FaChartLine, FaFire, FaMedal } from 'react-icons/fa';
 import { GiMeditation } from 'react-icons/gi';
@@ -98,6 +96,28 @@ const Dashboard = () => {
               <div>
                 <p className="text-sm text-gray-500">Total Practice Time</p>
                 <h3 className="text-2xl font-bold">{userStats.totalPracticeTime} mins</h3>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="flex items-center">
+              <div className="rounded-full bg-primary-light p-3 mr-4">
+                <FaFire className="text-primary text-xl" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Current Streak</p>
+                <h3 className="text-2xl font-bold">{userStats.currentStreak || 0} days</h3>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white rounded-xl shadow-md p-6">
+            <div className="flex items-center">
+              <div className="rounded-full bg-primary-light p-3 mr-4">
+                <FaMedal className="text-primary text-xl" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Total Points</p>
+                <h3 className="text-2xl font-bold">{userStats.pointsTotal || 0}</h3>
               </div>
             </div>
           </div>

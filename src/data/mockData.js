@@ -12,7 +12,7 @@ export const asanas = [
     description: 'A common pose in yoga that forms an inverted V-shape. It helps to strengthen the arms and legs while stretching the shoulders, hamstrings, and calves.',
     image: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?ixlib=rb-1.2.1&auto=format&fit=crop&0&q=60w=50',
     muscleGroups: ['Arms', 'Shoulders', 'Hamstrings', 'Calves'],
-    avgDuration: 60, // in seconds
+    avgDuration: 600, // in seconds
     popularityScore: 95
   },
   {
@@ -25,7 +25,7 @@ export const asanas = [
     description: 'A standing pose that strengthens the legs and core while opening the chest, shoulders, and hips. It helps to improve focus and balance.',
     image: 'https://images.unsplash.com/photo-1575052814086-f385e2e2ad1b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Legs', 'Core', 'Chest', 'Shoulders'],
-    avgDuration: 45, // in seconds
+    avgDuration: 600, // in seconds
     popularityScore: 88
   },
   {
@@ -38,7 +38,7 @@ export const asanas = [
     description: 'A balancing pose that strengthens the legs and core while improving focus and concentration. It helps to develop balance and stability.',
     image: 'https://images.unsplash.com/photo-1566501206188-5dd0cf160a0e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Legs', 'Core', 'Ankles'],
-    avgDuration: 30, // in seconds
+    avgDuration: 300, // in seconds
     popularityScore: 82
   },
   {
@@ -51,7 +51,7 @@ export const asanas = [
     description: 'A resting pose that gently stretches the hips, thighs, and ankles while calming the brain and relieving stress and fatigue.',
     image: 'https://images.unsplash.com/photo-1588286840104-8957b019727f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Back', 'Hips', 'Thighs'],
-    avgDuration: 90, // in seconds
+    avgDuration: 900, // in seconds
     popularityScore: 90
   },
   {
@@ -64,7 +64,7 @@ export const asanas = [
     description: 'A backbend that strengthens the spine while opening the chest and lungs. It helps to stimulate abdominal organs and relieve stress.',
     image: 'https://images.unsplash.com/photo-1599447292180-45fd84092ef4?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Back', 'Chest', 'Shoulders'],
-    avgDuration: 30, // in seconds
+    avgDuration: 300, // in seconds
     popularityScore: 85
   },
   {
@@ -77,7 +77,7 @@ export const asanas = [
     description: 'A backbend that strengthens the back, glutes, and hamstrings while opening the chest and reducing anxiety. It helps to improve circulation.',
     image: 'https://images.unsplash.com/photo-1593164842264-854604db2260?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Back', 'Glutes', 'Hamstrings', 'Chest'],
-    avgDuration: 45, // in seconds
+    avgDuration: 400, // in seconds
     popularityScore: 78
   },
   {
@@ -90,7 +90,7 @@ export const asanas = [
     description: 'A seated forward bend that stretches the spine and hamstrings while calming the mind and relieving stress. It helps to improve digestion.',
     image: 'https://images.unsplash.com/photo-1566908829550-e6551b00979b?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Spine', 'Hamstrings', 'Lower back'],
-    avgDuration: 60, // in seconds
+    avgDuration: 600, // in seconds
     popularityScore: 75
   },
   {
@@ -103,7 +103,7 @@ export const asanas = [
     description: 'A standing pose that strengthens the legs while opening the hips and chest. It helps to build stamina and concentration.',
     image: 'https://images.unsplash.com/photo-1510894347713-fc3ed6fdf539?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Legs', 'Hips', 'Chest', 'Shoulders'],
-    avgDuration: 45, // in seconds
+    avgDuration: 400, // in seconds
     popularityScore: 86
   },
   {
@@ -116,7 +116,7 @@ export const asanas = [
     description: 'A standing pose that stretches the legs, hips, and spine while strengthening the core. It helps to improve balance and stability.',
     image: 'https://images.unsplash.com/photo-1562088287-bde35a1ea917?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
     muscleGroups: ['Legs', 'Hips', 'Spine', 'Core'],
-    avgDuration: 30, // in seconds
+    avgDuration: 300, // in seconds
     popularityScore: 80
   },
   {
