@@ -15,6 +15,7 @@ import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import { UserStatsProvider } from './components/usercontexts/UserStatsContext'
 import ChatBot from './pages/chatbot/ChatBot'
+import LottieAnimation from './pages/yogi/LottieAnimation'
 function App() {
   const [isLoading, setIsLoading] = useState(true)
 
@@ -73,6 +74,7 @@ function App() {
           </Routes>
         </main>
        <ChatBot/>
+       <LottieAnimation/>
         <Footer />
       </div>
       </UserStatsProvider>
