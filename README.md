@@ -20,8 +20,6 @@ The welcome page introduces the platform and its purpose. Users can track their 
 
 ![Homepage](./productScreenshots/Home.png)  
 
-**Extracted Text:**  
-_"Transform Your Yoga Practice, Together. Track your progress, join challenges, and connect with a community of yoga enthusiasts."_  
 
 ---  
 
@@ -30,8 +28,6 @@ The login page allows users to sign in to their accounts or create a new one. It
 
 ![Login Page](./productScreenshots/Login.png)  
 
-**Extracted Text:**  
-_"Sign in to your account or create a new one. Email address | Password. Remember me | Forgot your password?"_  
 
 ---  
 
@@ -40,8 +36,6 @@ The dashboard provides an overview of the user's yoga journey, including total p
 
 ![Dashboard](./productScreenshots/dashboard.png)  
 
-**Extracted Text:**  
-_"Track your yoga journey and progress. Total Sessions | Total Practice Time | Current Streak | Total Points."_  
 
 ---  
 
@@ -50,8 +44,7 @@ The pricing section offers different subscription plans, from a free basic tier 
 
 ![Pricing Plans](./productScreenshots//pricing.png)  
 
-**Extracted Text:**  
-_"Choose Your Perfect Plan. Start your yoga journey with flexible pricing options. Plans include Free, Basic, Premium, and Pro."_  
+
 
 ---  
 
@@ -60,8 +53,6 @@ The Asana Library allows users to explore different yoga poses, search for speci
 
 ![Asana Library](./productScreenshots/asana%20library.png)  
 
-**Extracted Text:**  
-_"Explore and learn about different yoga poses. Search asanas by name or Sanskrit. Examples include Downward-Facing Dog, Warrior I, Tree Pose."_  
 
 ---  
 
@@ -70,8 +61,7 @@ The community section enables users to connect with fellow yoga practitioners, s
 
 ![Community Page](./productScreenshots/community.png)  
 
-**Extracted Text:**  
-_"Connect with fellow yoga enthusiasts and join challenges. Share your yoga journey and engage in discussions."_  
+
 
 ---  
 
