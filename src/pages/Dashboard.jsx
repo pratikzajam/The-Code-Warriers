@@ -4,6 +4,7 @@ import { GiMeditation } from 'react-icons/gi';
 import { useUserStats } from '../components/usercontexts/UserStatsContext'
 import { startOfDay, isSameDay, parseISO } from 'date-fns';
 import Schedule from './schedule/Sechedule';
+import Pricing from './moneycard/Pricing';
 import { Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -157,6 +158,7 @@ const Dashboard = () => {
         </div>
        
       </div>
+      <Pricing/>
       <Schedule/>
    
     </div>

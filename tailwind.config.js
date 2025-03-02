@@ -6,6 +6,15 @@ export default {
   ],
   theme: {
     extend: {
+      transitionProperty: {
+        'all': 'all',
+      },
+      transitionDuration: {
+        '300': '300ms',
+      },
+      transitionTimingFunction: {
+        'ease-in-out': 'ease-in-out',
+      },
       colors: {
         primary: {
           light: '#8ECAE6',

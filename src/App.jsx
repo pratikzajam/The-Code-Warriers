@@ -14,7 +14,7 @@ import Register from './pages/Register'
 import { AuthProvider } from './context/AuthContext'
 import ProtectedRoute from './components/auth/ProtectedRoute'
 import { UserStatsProvider } from './components/usercontexts/UserStatsContext'
-
+import ChatBot from './pages/chatbot/ChatBot'
 function App() {
   const [isLoading, setIsLoading] = useState(true)
 
@@ -72,7 +72,7 @@ function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
-        
+       <ChatBot/>
         <Footer />
       </div>
       </UserStatsProvider>
